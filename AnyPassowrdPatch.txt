@@ -1,0 +1,109 @@
+Patch
+Replace
+0040162C     /74 0F         JE SHORT Exe2Ahk.0040163D
+with 
+0040162C     /EB 0F         JMP SHORT Exe2Ahk.0040163D
+
+Function Pseudo
+signed int __thiscall sub_401476(void *this, const char *a2, const char *a3)
+{
+  void *v3; // esi@1
+  FILE *v4; // eax@1
+  signed int v6; // eax@3
+  size_t v7; // eax@5
+  signed int i; // edx@5
+  const char *j; // eax@7
+  FILE *v10; // ST18_4@7
+  signed int v11; // eax@12
+  int v12; // edi@19
+  signed int v13; // edi@21
+  signed int v14; // [sp-4h] [bp-550h]@16
+  char v15; // [sp+Ch] [bp-540h]@1
+  char v16; // [sp+410h] [bp-13Ch]@1
+  char v17[16]; // [sp+518h] [bp-34h]@11
+  char v18[8]; // [sp+528h] [bp-24h]@4
+  char v19[8]; // [sp+530h] [bp-1Ch]@4
+  int v20; // [sp+538h] [bp-14h]@9
+  int v21; // [sp+53Ch] [bp-10h]@7
+  int v22; // [sp+540h] [bp-Ch]@19
+  __int32 v23; // [sp+544h] [bp-8h]@7
+  char v24; // [sp+54Bh] [bp-1h]@17
+  int v25; // [sp+554h] [bp+8h]@7
+
+  v3 = this;
+  sub_4019D0(&v15);
+  strcpy(&v16, a2);
+  v4 = fopen(&v16, "rb");
+  *(_DWORD *)v3 = v4;
+  if ( !v4 )
+    return 1;
+  v6 = 0;
+  do
+  {
+    v18[v6] = byte_40A04C[v6];
+    v19[v6] = byte_40A044[v6];
+    ++v6;
+  }
+  while ( v6 < 8 );
+  v7 = strlen(a3);
+  *((_DWORD *)v3 + 68) = 0;
+  for ( i = 0; i < (signed int)v7; ++i )
+    *((_DWORD *)v3 + 68) += a3[i];
+  fseek(*(FILE **)v3, -8, 2);
+  fread((char *)v3 + 4, 4u, 1u, *(FILE **)v3);
+  v10 = *(FILE **)v3;
+  v23 = ftell(*(FILE **)v3);
+  fread(&v21, 4u, 1u, v10);
+  fseek(*(FILE **)v3, 0, 0);
+  v25 = 0;
+  for ( j = a3; v25 < v23; ++v25 )
+  {
+    if ( *(_BYTE *)(*(_DWORD *)v3 + 12) & 0x10 )
+      break;
+    fread(&v20, 1u, 1u, *(FILE **)v3);
+    j = (const char *)sub_401A0F(v20);
+  }
+  if ( v21 != ((unsigned int)j ^ 0xAAAAAAAA) )
+    goto LABEL_25;
+  fseek(*(FILE **)v3, *((_DWORD *)v3 + 1), 0);
+  if ( !fread(v17, 0x10u, 1u, *(FILE **)v3) )
+    goto LABEL_25;
+  v11 = 0;
+  do
+  {
+    if ( v17[v11] != v18[v11] )
+      break;
+    ++v11;
+  }
+  while ( v11 < 16 );
+  if ( v11 != 16 )
+  {
+LABEL_25:
+    v14 = 3;
+LABEL_21:
+    v13 = v14;
+    fclose(*(FILE **)v3);
+    return v13;
+  }
+  fread(&v24, 1u, 1u, *(FILE **)v3);
+  if ( v24 != 3 )
+  {
+    v14 = 4;
+    goto LABEL_21;
+  }
+  fread(&v22, 4u, 1u, *(FILE **)v3);
+  v12 = v22 ^ 0xFAC1;
+  fread((char *)v3 + 12, 1u, v22 ^ 0xFAC1, *(FILE **)v3);
+  sub_40165F((char *)v3 + 12, v12, v12 + 50130);
+  *((_BYTE *)v3 + v12 + 12) = 0;
+
+  replace with JMP SHORT 0040163D
+
+  if ( strcmp((const char *)v3 + 12, a3) ) // Compare passwords. True if not equal
+  {
+    v14 = 5; // function returns this value to indicate bad password which is passed to the switch function
+    goto LABEL_21; 
+  }
+  *((_DWORD *)v3 + 2) = ftell(*(FILE **)v3);
+  return 0;
+}

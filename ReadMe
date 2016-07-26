@@ -1,0 +1,6 @@
+Exe2AhkAnyPassword.exe
+	Ignores password protection and decompiles the AHK Basic exe.
+
+Exe2AhkReturnPassword.exe
+	If an incorrect password is specified then the actual password will be outputted:
+	"Open: The following error occurred: ActualPassword"
